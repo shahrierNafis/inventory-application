@@ -102,7 +102,7 @@ async function createItems() {
       return itemCreate(
         product.title,
         product.description,
-        category,
+        category._id,
         product.price,
         product.rating.count
       );

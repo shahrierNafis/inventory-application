@@ -1,0 +1,19 @@
+extends layout
+block content
+    h1= title
+    if (category) 
+        p= "description: " + category.description
+    if (itemList && itemList.length > 0) 
+        ul(class='list-group')
+            each item in itemList || []
+                li(class='list-group-item')
+                    a(href='/inventory/item/'+item.id) #{item.name}
+
+    else 
+        p= "No items found"
+    if (category)
+        hr 
+        p
+            a(href="/inventory/category/"+category.id+"/update" class="btn btn-primary ")= "Update category"
+        p 
+            a(href="/inventory/category/"+category.id+"/delete" class="btn btn-danger ")= "Delete category" 

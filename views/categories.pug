@@ -1,0 +1,13 @@
+extends layout
+block content
+    h1= title
+
+    ul(class='list-group')
+        each category in categoryList || []
+            li(class='list-group-item')
+                a(href='/inventory/category/'+category.id) #{category.name}
+                ul(class='list-group')
+                    each item in itemList || []
+                        if item.category == category.id
+                            li(class='list-group-item')
+                                a(href='/inventory/item/'+item.id) #{item.name}

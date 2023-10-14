@@ -1,0 +1,12 @@
+extends layout
+block content
+    h1= title
+    p= "category: " + item.category.name
+    p= "price: $" + item.price
+    p= "description: " + item.description
+    p= "quantity: " + item.numberInStock
+    hr 
+    p
+        a(href="/inventory/item/"+item.id+"/update" class="btn btn-primary ")= "Update item"
+    p 
+        a(href="/inventory/item/"+item.id+"/delete" class="btn btn-danger ")= "Delete item" 

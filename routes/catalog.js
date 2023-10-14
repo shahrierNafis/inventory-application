@@ -3,10 +3,22 @@ const categoryController = require("../controllers/categoryController");
 const itemController = require("../controllers/itemController");
 const router = express.Router();
 
+const Category = require("../models/Category");
+const Item = require("../models/Item");
+
 // GET catalog home page.
-router.get("/", function (req, res, next) {
-  res.render("index");
+router.get("/", async function (req, res, next) {
+  const categoryList = await Category.find();
+  const itemList = await Item.find();
+  console.log(itemList, categoryList);
+  res.render("index", {
+    title: "Inventory Management System",
+    categoryList: categoryList,
+    itemList: itemList,
+  });
 });
+// GET request for category list
+router.get("/categories", categoryController.categoryList);
 
 // GET request to create a new category
 router.get("/category/new", categoryController.categoryCreateGet);
@@ -48,7 +60,7 @@ router.get("/item/:id/update", itemController.itemUpdateGet);
 router.post("/item/:id/update", itemController.itemUpdatePost);
 
 // GET request for one item
-router.get("/item/:id", itemController.items);
+router.get("/item/:id", itemController.item);
 
 // GET request for list of all items
 router.get("/items", itemController.items);
