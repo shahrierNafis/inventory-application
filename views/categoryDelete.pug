@@ -1,0 +1,16 @@
+extends layout 
+block content
+    h1  Delete Category
+    if(itemList.length > 0)
+        p you would have to delete all items first to delete this category.
+        ul(class='list-group')
+            each item in itemList || []
+                li(class='list-group-item')
+                    a(href='/inventory/item/'+item.id) #{item.name}
+    else
+        p Are you sure you want to delete this category?
+        form(action="" method="POST")
+            input(type="hidden" name="id" value="{{category.id}}")
+            input(type="submit" value="Delete" class="btn btn-danger")
+
+

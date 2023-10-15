@@ -1,0 +1,54 @@
+extends layout
+block content
+    h1= title 
+    form(method='POST' action='')
+        div.form-group.form-floating
+            input#name.form-control(type='text',
+                placeholder='watch, food etc.',
+                name='name' value=(item ? item.name : ''),
+                required='true')
+            label(for='name') Name:
+
+        .form-group.form-floating
+            select#category.form-control(type='select'
+                placeholder='Select category' 
+                name='category' 
+                required='true' )
+                option(selected 
+                    disabled 
+                    hidden
+                    class="--bs-secondary-color" )
+                for category in categoryList
+                    if item
+                        option(value=category._id
+                            selected=(category._id.toString()===item.category._id.toString() ? 'selected' : false) ) #{category.name}
+                    else
+                        option(value=category._id) #{category.name}
+            label(for='category') category:
+        .input-group
+            span(class="input-group-text") $
+            .form-floating
+                input#name.form-control(type='number',
+                    placeholder='15, 20 etc.',
+                    name='price' value=(item ? item.price : ''),
+                    required='true'
+                    min="0"
+                    step="any")
+                label(for='name') Price:
+        .form-group.form-floating
+            textarea#description.form-control(type='textarea'
+                placeholder='description....' 
+                name='description') #{item ? item.description : ''}
+            label(for='description') Description:
+        .input-group.form-floating
+            input#numberInStock.form-control(type='number',
+                placeholder='100, 200 etc.',
+                name='numberInStock' value=(item ? item.numberInStock : ''),
+                required='true'
+                pattern="[0-9]" min="0")
+            label(for='numberInStock') Quantity:
+        button.btn.btn-primary(type='submit') Submit
+    if errors
+        ul
+            for error in errors
+                li!= error.msg
