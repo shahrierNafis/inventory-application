@@ -1,10 +1,28 @@
 extends layout
 block content
-    h1= title
-    p= "category: " + item.category.name
-    p= "price: $" + item.price
-    p= "description: " + item.description
-    p= "quantity: " + item.numberInStock
+    .row
+        .col-md-6(style={"height": "75vh",
+            "display":"flex",
+            "align-items": "center"})
+            if(item.image.data)
+                img(style="max-width: 100%; max-height: 100vh; margin: auto;" 
+                    class="rounded-4 fit"
+                    src=`data:${item.image.contentType};base64,${item.image.data.toString('base64')}`)
+            else
+                img(style="max-width: 100%; max-height: 100vh; margin: auto;" 
+                    class="rounded-4 fit"
+                    src="/images/no-image-icon-6.png")
+        .col-md-6(style={height: "75vh",
+            "display":"flex",
+            "align-items": "left",
+            "flex-direction": "column",
+            "justify-content": "center"})
+            h1= title
+            p= "category: " + item.category.name
+            p= "$" + item.price+"/per item"
+            p=  item.description
+            p= "quantity: " + item.numberInStock
+
     hr 
     p
         a(href="/inventory/item/"+item.id+"/update" class="btn btn-primary ")= "Update item"

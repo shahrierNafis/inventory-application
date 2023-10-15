@@ -4,10 +4,20 @@ block content
     if (category) 
         p= "description: " + category.description
     if (itemList && itemList.length > 0) 
-        ul(class='list-group')
+        div(class="d-flex flex-row flex-wrap overflow-auto")
             each item in itemList || []
-                li(class='list-group-item')
-                    a(href='/inventory/item/'+item.id) #{item.name}
+                <div class="card" style="flex: 0 0 18rem; margin: 0.5rem; overflow: hidden">
+                    a(href='/inventory/item/'+item.id class="nav-link")
+                        if (item.image.data)
+                            img( src=`data:${item.image.contentType};base64,${item.image.data.toString('base64')}` class="card-img-top" alt="...")
+                        else
+                            img( src=`/images/no-image-icon-6.png` class="card-img-top" alt="...")
+                        <div class="card-body" style="position: relative;">
+                        <h5 class="card-title">#{item.name}</h5>
+                        <p class="card-text">$#{item.price}</p>
+                        p(class="card-text") quantity:#{item.numberInStock}
+                        </div>
+                </div>
 
     else 
         p= "No items found"

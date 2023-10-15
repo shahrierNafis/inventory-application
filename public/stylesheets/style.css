@@ -1,3 +1,6 @@
+.nav-item {
+  font-size: 2rem;
+}
 .form-floating > .form-control::placeholder {
   color: revert;
 }

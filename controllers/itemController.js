@@ -3,9 +3,18 @@ const { body, validationResult } = require("express-validator");
 const Category = require("../models/Category");
 const Item = require("../models/Item");
 
+//setting options for multer
+const multer = require("multer");
+const storage = multer.memoryStorage();
+const upload = multer({
+  storage: storage,
+  limits: { fieldSize: 5 * 1024 * 1024 },
+});
+
 exports.item = asyncHandler(async (req, res, next) => {
   const item = await Item.findById(req.params.id).populate("category").exec();
   const categoryList = await Category.find();
+  // item.image.data = btoa(item.image.data);
   res.render("item", {
     title: item.name,
     item: item,
@@ -34,6 +43,7 @@ exports.itemCreateGet = asyncHandler(async (req, res, next) => {
 
 // Handle item create on POST
 exports.itemCreatePost = [
+  upload.single("image"),
   body("name", "Name must not be empty.").trim().escape().isLength({ min: 1 }),
   body("description", "").optional({ value: "falsy" }).trim().escape(),
   body("category", "select a category").trim().escape().notEmpty(),
@@ -53,6 +63,9 @@ exports.itemCreatePost = [
       category: req.body.category,
       price: req.body.price,
       numberInStock: req.body.numberInStock,
+      image: req.file
+        ? { data: req.file.buffer, contentType: req.file.mimetype }
+        : { data: null, contentType: null },
     });
     if (errors.isEmpty()) {
       // there are no errors, so we can save the item
@@ -84,6 +97,7 @@ exports.itemUpdateGet = asyncHandler(async (req, res, next) => {
 
 // Handle item update on POST
 exports.itemUpdatePost = [
+  upload.single("image"),
   // Validate and sanitize fields.
   body("name", "Name must not be empty.").trim().escape().isLength({ min: 1 }),
   body("description", "").optional({ value: "falsy" }).trim().escape(),
@@ -104,12 +118,14 @@ exports.itemUpdatePost = [
       category: req.body.category,
       price: req.body.price,
       numberInStock: req.body.numberInStock,
+      // Don't overwrite image data if the user forgot to upload an image
+      ...(req.file
+        ? { image: { data: req.file.buffer, contentType: req.file.mimetype } }
+        : {}),
       _id: req.params.id, // this is required, or a new ID will be assigned!
     });
-    console.log("hit");
     if (errors.isEmpty()) {
       // there are no errors, so we can save the item
-      console.log("hit");
       await Item.findByIdAndUpdate(req.params.id, item);
 
       res.redirect("/inventory/item/" + req.params.id);

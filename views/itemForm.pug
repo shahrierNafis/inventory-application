@@ -1,7 +1,7 @@
 extends layout
 block content
     h1= title 
-    form(method='POST' action='')
+    form(method='POST' action='' enctype="multipart/form-data")
         div.form-group.form-floating
             input#name.form-control(type='text',
                 placeholder='watch, food etc.',
@@ -35,6 +35,13 @@ block content
                     min="0"
                     step="any")
                 label(for='name') Price:
+        .form-group
+            label(for="image" class="form-label") Image:
+            input(class="form-control" 
+                name="image" 
+                type="file"
+                id="image"
+                accept="image/*")
         .form-group.form-floating
             textarea#description.form-control(type='textarea'
                 placeholder='description....' 

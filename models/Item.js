@@ -10,6 +10,10 @@ const ItemSchema = new mongoose.Schema({
   },
   price: Number,
   numberInStock: Number,
+  image: {
+    data: Buffer,
+    contentType: String,
+  },
 });
 ItemSchema.virtual("url").get(function () {
   return "/catalog/items/" + this._id;
