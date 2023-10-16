@@ -14,6 +14,15 @@ const helmet = require("helmet");
 
 const app = express();
 
+app.enable("trust proxy");
+app.use((req, res, next) => {
+  if (req.secure) {
+    next();
+  } else {
+    res.redirect("https://" + req.headers.host + req.url);
+  }
+});
+
 app.use(compression()); // Compress all routes
 
 // Add helmet to the middleware chain.
