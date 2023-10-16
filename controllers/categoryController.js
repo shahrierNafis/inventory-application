@@ -45,15 +45,23 @@ exports.categoryCreatePost = [
   asyncHandler(async (req, res, next) => {
     // Extract the validation errors from a request.
     const errors = validationResult(req);
+    const errorsArr = errors.array();
+
+    // Check if password is correct
+    let passIsValid = true;
+    if (req.body.password != process.env.ADMIN_PASSWORD) {
+      passIsValid = false;
+      errorsArr.push({ msg: "Incorrect password" });
+    }
     // Create Category object with escaped and trimmed data
     const category = new Category({
       name: req.body.name,
       description: req.body.description,
     });
-    if (errors.isEmpty()) {
+    if (errors.isEmpty() && passIsValid) {
       // there are no errors, so we can save the category
       await category.save();
-      res.redirect("/inventory/categories");
+      res.redirect("/inventory/category/" + category._id);
     } else {
       // there are errors, so render form again
       const categoryList = await Category.find();
@@ -61,7 +69,7 @@ exports.categoryCreatePost = [
         title: "Create Category",
         categoryList: categoryList,
         category: category,
-        errors: errors.array(),
+        errors: errorsArr,
       });
     }
   }),
@@ -87,13 +95,21 @@ exports.categoryUpdatePost = [
   asyncHandler(async (req, res, next) => {
     // Extract the validation errors from a request.
     const errors = validationResult(req);
+    const errorsArr = errors.array();
+
+    // Check if password is correct
+    let passIsValid = true;
+    if (req.body.password != process.env.ADMIN_PASSWORD) {
+      passIsValid = false;
+      errorsArr.push({ msg: "Incorrect password" });
+    }
     // Create Category object with escaped and trimmed data
     const category = new Category({
       name: req.body.name,
       description: req.body.description,
       _id: req.params.id, // this is required, or a new ID will be assigned!
     });
-    if (errors.isEmpty()) {
+    if (errors.isEmpty() && passIsValid) {
       // there are no errors, so we can find and update
       await Category.findByIdAndUpdate(req.params.id, category);
       res.redirect("/inventory/category/" + req.params.id);
@@ -104,7 +120,7 @@ exports.categoryUpdatePost = [
         title: "Create Category",
         categoryList: categoryList,
         category: category,
-        errors: errors.array(),
+        errors: errorsArr,
       });
     }
   }),
@@ -125,6 +141,17 @@ exports.categoryDeleteGet = asyncHandler(async (req, res, next) => {
 });
 // Handle category delete on POST
 exports.categoryDeletePost = asyncHandler(async (req, res, next) => {
-  await Category.findByIdAndRemove(req.params.id);
-  res.redirect("/inventory/categories");
+  // Check if password is correct
+  if (req.body.password != process.env.ADMIN_PASSWORD) {
+    const categoryList = await Category.find();
+    res.render("categoryDelete", {
+      title: "Delete Category",
+      categoryList: categoryList,
+      itemList: [],
+      errors: [{ msg: "Incorrect password" }],
+    });
+  } else {
+    await Category.findByIdAndRemove(req.params.id);
+    res.redirect("/inventory/categories");
+  }
 });

@@ -11,6 +11,17 @@ block content
         p Are you sure you want to delete this category?
         form(action="" method="POST")
             input(type="hidden" name="id" value="{{category.id}}")
+            .form-group.form-floating
+                input#password.form-control(type='password',
+                    placeholder='********',
+                    name='password' ,
+                    required='true')
+                label(for='name') Password:
             input(type="submit" value="Delete" class="btn btn-danger")
-
+    if errors
+        ul
+            for error in errors
+                li
+                    div(class='alert alert-danger' role='alert')
+                        != error.msg
 

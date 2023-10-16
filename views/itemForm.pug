@@ -28,7 +28,7 @@ block content
         .input-group
             span(class="input-group-text") $
             .form-floating
-                input#name.form-control(type='number',
+                input#price.form-control(type='number',
                     placeholder='15, 20 etc.',
                     name='price' value=(item ? item.price : ''),
                     required='true'
@@ -54,8 +54,14 @@ block content
                 required='true'
                 pattern="[0-9]" min="0")
             label(for='numberInStock') Quantity:
+        .form-group.form-floating
+            input#password.form-control(type='password',
+                placeholder='********',
+                name='password' ,
+                required='true')
+            label(for='name') Password:
         button.btn.btn-primary(type='submit') Submit
     if errors
-        ul
-            for error in errors
-                li!= error.msg
+        for error in errors
+            div(class='alert alert-danger' role='alert')
+                != error.msg

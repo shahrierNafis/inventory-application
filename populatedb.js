@@ -60,13 +60,26 @@ async function createCategories() {
   ]);
 }
 
-async function itemCreate(name, description, category, price, numberInStock) {
+async function itemCreate(
+  name,
+  description,
+  category,
+  price,
+  numberInStock,
+  image
+) {
   const item = new Item({
     name: name,
     description: description,
     category: category,
     price: price,
     numberInStock: numberInStock,
+    image: {
+      data: await Buffer.from(
+        await (await (await fetch(image)).blob()).arrayBuffer()
+      ),
+      contentType: "image/jpeg",
+    },
   });
   await item.save();
   console.log(`Added item: ${name}`);
@@ -104,7 +117,8 @@ async function createItems() {
         product.description,
         category._id,
         product.price,
-        product.rating.count
+        product.rating.count,
+        product.image
       );
     })
   );

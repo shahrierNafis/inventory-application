@@ -56,6 +56,14 @@ exports.itemCreatePost = [
   asyncHandler(async (req, res, next) => {
     // Extract the validation errors from a request.
     const errors = validationResult(req);
+    const errorsArr = errors.array();
+
+    // Check if password is correct
+    let passIsValid = true;
+    if (req.body.password != process.env.ADMIN_PASSWORD) {
+      passIsValid = false;
+      errorsArr.push({ msg: "Incorrect password" });
+    }
     // Create Item object with escaped and trimmed data
     const item = new Item({
       name: req.body.name,
@@ -67,7 +75,7 @@ exports.itemCreatePost = [
         ? { data: req.file.buffer, contentType: req.file.mimetype }
         : { data: null, contentType: null },
     });
-    if (errors.isEmpty()) {
+    if (errors.isEmpty() && passIsValid) {
       // there are no errors, so we can save the item
       await item.save();
       res.redirect("/inventory/item/" + item._id);
@@ -78,7 +86,7 @@ exports.itemCreatePost = [
         title: "Create Item",
         categoryList: categoryList,
         item: item,
-        errors: errors.array(),
+        errors: errorsArr,
       });
     }
   }),
@@ -111,6 +119,14 @@ exports.itemUpdatePost = [
   asyncHandler(async (req, res, next) => {
     // Extract the validation errors from a request.
     const errors = validationResult(req);
+    const errorsArr = errors.array();
+
+    // Check if password is correct
+    let passIsValid = true;
+    if (req.body.password != process.env.ADMIN_PASSWORD) {
+      passIsValid = false;
+      errorsArr.push({ msg: "Incorrect password" });
+    }
     // Create Item object with escaped and trimmed data
     const item = new Item({
       name: req.body.name,
@@ -124,7 +140,7 @@ exports.itemUpdatePost = [
         : {}),
       _id: req.params.id, // this is required, or a new ID will be assigned!
     });
-    if (errors.isEmpty()) {
+    if (errors.isEmpty() && passIsValid) {
       // there are no errors, so we can save the item
       await Item.findByIdAndUpdate(req.params.id, item);
 
@@ -136,7 +152,7 @@ exports.itemUpdatePost = [
         title: "Update Item",
         categoryList: categoryList,
         item: item,
-        errors: errors.array(),
+        errors: errorsArr,
       });
     }
   }),
@@ -153,6 +169,15 @@ exports.itemDeleteGet = asyncHandler(async (req, res, next) => {
 
 // Handle item delete on Post
 exports.itemDeletePost = asyncHandler(async (req, res, next) => {
-  await Item.findByIdAndRemove(req.params.id);
-  res.redirect("/inventory/items");
+  // Check if password is correct
+  if (req.body.password != process.env.ADMIN_PASSWORD) {
+    const categoryList = await Category.find();
+    res.render("itemDelete", {
+      categoryList: categoryList,
+      errors: [{ msg: "Incorrect password" }],
+    });
+  } else {
+    await Item.findByIdAndRemove(req.params.id);
+    res.redirect("/inventory/items");
+  }
 });

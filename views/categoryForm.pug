@@ -15,8 +15,16 @@ block content
                 placeholder='description....' 
                 name='description') #{category ? category.description : ''}
             label(for='description') Description:
+        .form-group.form-floating
+            input#password.form-control(type='password',
+                placeholder='********',
+                name='password' ,
+                required='true')
+            label(for='name') Password:
         button.btn.btn-primary(type='submit') Submit
     if errors
         ul
             for error in errors
-                li!= error.msg
+                li
+                    div(class='alert alert-danger' role='alert')
+                        != error.msg

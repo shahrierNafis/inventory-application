@@ -13,10 +13,10 @@ block content
                             <div class="card" style="flex: 0 0 18rem; margin: 0.5rem; overflow: hidden">
                                 a(href='/inventory/item/'+item.id class="nav-link")
                                     if (item.image.data)
-                                        img( src=`data:${item.image.contentType};base64,${item.image.data.toString('base64')}` class="card-img-top" alt="...")
+                                        img( src=`data:${item.image.contentType};base64,${item.image.data.toString('base64')}` class="card-img-top" alt="..." style=" height: 75%; object-fit: scale-down;")
                                     else
-                                        img( src=`/images/no-image-icon-6.png` class="card-img-top" alt="...")
-                                    <div class="card-body" style="position: relative;">
+                                        img( src=`/images/no-image-icon-6.png` class="card-img-top" alt="..." style=" height: 75%; object-fit: scale-down;")
+                                    <div class="card-body" style="margin-top: auto">
                                     <h5 class="card-title">#{item.name}</h5>
                                     <p class="card-text">$#{item.price}</p>
                                     p(class="card-text") quantity:#{item.numberInStock}
