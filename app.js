@@ -14,15 +14,6 @@ const helmet = require("helmet");
 
 const app = express();
 
-app.enable("trust proxy");
-app.use((req, res, next) => {
-  if (req.secure) {
-    next();
-  } else {
-    res.redirect("https://" + req.headers.host + req.url);
-  }
-});
-
 app.use(compression()); // Compress all routes
 
 // Add helmet to the middleware chain.
@@ -34,15 +25,6 @@ app.use(
     },
   })
 );
-
-// Set up rate limiter: maximum of twenty requests per minute
-const RateLimit = require("express-rate-limit");
-const limiter = RateLimit({
-  windowMs: 1 * 60 * 1000, // 1 minute
-  max: 20,
-});
-// Apply rate limiter to all requests
-app.use(limiter);
 
 // Set up mongoose connection
 const mongoose = require("mongoose");
